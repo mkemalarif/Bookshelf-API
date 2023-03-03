@@ -78,26 +78,34 @@ const tambahBukuHandler = (request, h)=>{
   return response;
 };
 
-// const tampilBukuHandler = ()=>({
-//   status: 'success',
-//   data: {
-//     books: books.map((buku) => ({
-//       id: buku.id,
-//       name: buku.name,
-//       publisher: buku.publisher,
-//     })),
-//   },
-// });
-const tampilBukuHandler = ()=>({
-  status: 'success',
-  data: {
-    books: books.map((buku) => ({
-      id: buku.id,
-      name: buku.name,
-      publisher: buku.publisher,
-    })),
-  },
-});
+const tampilBukuHandler = (request, h)=>{
+  const {reading, finished} = request.query;
+  let ambilBuku = books;
+  const buku = (book)=> ({
+    id: book.id,
+    name: book.name,
+    publisher: book.publisher,
+  });
+
+  if (reading !== true) {
+    ambilBuku = books.filter((book) => book.reading === false);
+  };
+
+  if (finished == 1) {
+    ambilBuku = books.filter((book)=> book.finished == true);
+  } else if (finished == 0) {
+    ambilBuku = books.filter((book)=> book.finished == false);
+  };
+
+  const response = h.response({
+    status: 'success',
+    data: {
+      books: ambilBuku.map(buku),
+    },
+  });
+  response.code(200);
+  return response;
+};
 
 const tampilBukuById = (request, h) => {
   const {id} = request.params;
