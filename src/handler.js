@@ -79,23 +79,32 @@ const tambahBukuHandler = (request, h)=>{
 };
 
 const tampilBukuHandler = (request, h)=>{
-  const {reading, finished} = request.query;
+  const {name, reading, finished} = request.query;
   let ambilBuku = books;
   const buku = (book)=> ({
     id: book.id,
     name: book.name,
     publisher: book.publisher,
   });
+  // books.forEach((book) => console.log(typeof book.name));
 
-  if (reading !== true) {
+  if (name !== undefined) {
+    ambilBuku = books.filter(
+        (book)=> book.name.toLowerCase().includes(name.toLowerCase()));
+  };
+
+  if (reading !== undefined) {
     ambilBuku = books.filter((book) => book.reading === false);
   };
 
-  if (finished == 1) {
-    ambilBuku = books.filter((book)=> book.finished == true);
-  } else if (finished == 0) {
-    ambilBuku = books.filter((book)=> book.finished == false);
+  if (finished !== undefined) {
+    if (finished == '1') {
+      ambilBuku = books.filter((book)=> book.finished == true);
+    } else if (finished == '0') {
+      ambilBuku = books.filter((book)=> book.finished == false);
+    };
   };
+
 
   const response = h.response({
     status: 'success',
